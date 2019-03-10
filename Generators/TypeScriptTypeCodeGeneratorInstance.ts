@@ -1,4 +1,4 @@
-class TypeScriptCodeGeneratorInstance implements ICodeGeneratorInstance{
+class TypeScriptTypeCodeGeneratorInstance implements ICodeGeneratorInstance{
     code : string = "TypeScript";
     GetQueryCode(query : GraphQLQuery) : string {
 
@@ -34,6 +34,15 @@ class TypeScriptCodeGeneratorInstance implements ICodeGeneratorInstance{
             })
 
             template = `enum  ${type.name} { \r\n ${fields} \r\n } \r\n \r\n`;
+        }
+
+        if(type.kind == "INPUT_OBJECT"){
+            var fields = "";
+            type.inputFields.forEach(i =>{
+                fields += `${i.name} ,\r\n`
+            })
+
+            template = `interface  ${type.name} { \r\n ${fields} \r\n } \r\n \r\n`;
         }
         
 

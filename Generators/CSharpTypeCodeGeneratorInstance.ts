@@ -1,4 +1,4 @@
-class CSharpCodeGeneratorInstance implements ICodeGeneratorInstance{
+class CSharpTypeCodeGeneratorInstance implements ICodeGeneratorInstance{
     code : string = "C#";
     GetQueryCode(query : GraphQLQuery) : string {
 
@@ -48,6 +48,24 @@ class CSharpCodeGeneratorInstance implements ICodeGeneratorInstance{
 
         return template;
     }
+
+    GetTypeActual(type : OfType9) : string {
+        switch(type.kind) { 
+            case "LIST":
+                return this.GetTypeActual(type.ofType.ofType);
+            break;
+            case "NON_NULL":
+                    return this.GetTypeActual(type.ofType);
+            break;
+            case "String":
+               
+            break;
+        }
+
+        return "";
+    }
+
+    
 
     GetType(field : any):string{
 

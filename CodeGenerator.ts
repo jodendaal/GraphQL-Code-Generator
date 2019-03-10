@@ -4,8 +4,8 @@ class CodeGenerator
 {
     codeGenerators : ICodeGeneratorInstance [];
 
-    constructor(){
-        this.codeGenerators = [new CSharpCodeGeneratorInstance(),new TypeScriptCodeGeneratorInstance()]
+    constructor(private url : string,private headers : any){
+        this.codeGenerators = [new CSharpTypeCodeGeneratorInstance(),new TypeScriptTypeCodeGeneratorInstance()]
     }
 
     public GetQueryCode(query : GraphQLQuery,code  : string) : string {
@@ -16,7 +16,7 @@ class CodeGenerator
     public GetSchema(callback : (content : string) => void,code : string) {
         var generator = this.codeGenerators.filter(i=> i.code == code)[0];
         var schema = new Schema();
-        schema.getSchema((result=>{
+        schema.getSchema(this.url,this.headers, (result=>{
 
             var objects = result.data.__schema.types;
             var content = "";
@@ -39,7 +39,7 @@ class CodeGenerator
 
 class Schema {
 
-    getSchema(schema : (result : RootObject) => void)  : any {
+    getSchema(url: string,headers : any, schema : (result : RootObject) => void)  : any {
 
         var query = new GraphQLQuery();
         query.operationName = "IntrospectionQuery";
@@ -48,7 +48,7 @@ class Schema {
         
 
         
-        this.postAjax("https://graphql.communitygraph.org/graphql/",query,(result)=>{
+        this.postAjax(url,headers,query,(result)=>{
            
             console.log(JSON.parse(result));
             schema(JSON.parse(result));
@@ -57,7 +57,7 @@ class Schema {
         
     }
 
-    postAjax(url : any, data :any , success : (result : any) => void) {
+    postAjax(url : any,headers : any, data :any , success : (result : any) => void) {
         
     
         var xhr = (<any>window).XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
@@ -67,6 +67,11 @@ class Schema {
         };
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.setRequestHeader('Content-Type', 'application/json');
+
+       for(var key in headers){
+            xhr.setRequestHeader(key, headers[key]);
+       }
+
         xhr.send(JSON.stringify(data));
         return xhr;
     }

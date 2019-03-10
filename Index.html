@@ -14,6 +14,39 @@
   <body>
     <h3>Welcome to GraphQL Code Generator. We hope you enjoy your stay.</h3>
 
+    <div>
+      
+    </div>
+
+
+
+      <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Url</span>
+          </div>
+
+          <input id="graphQLEndpointUrl" type="text" class="form-control" placeholder="https://graphql.communitygraph.org/graphql/" aria-label="Recipient's username" aria-describedby="basic-addon2">
+          <div class="input-group-append">
+              <button id="btnGenerate" onclick="GenerateCode()" class="btn btn-outline-secondary" type="button">Generate</button>
+            </div>
+        </div>
+
+      <div class="input-group">
+          <div class="input-group-prepend">
+            <span class="input-group-text">Headers</span>
+          </div>
+
+
+          <textarea class="form-control" aria-label="With textarea" id="httpHeaders" type="text" rows="4" cols="50" class="form-control" placeholder="{
+            apiKey:'KK888==',
+             userId:1
+}" ></textarea>
+        </div>
+    
+   
+    
+    
+
     <div class="row">
             <div class="col-md-2">
 
@@ -21,26 +54,28 @@
             <div class="col-md-8">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                             <li class="nav-item">
-                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                              <a class="nav-link active" id="typescript-tab" data-toggle="tab" href="#typescript" role="tab" aria-controls="typescript"
                                 aria-selected="true">Type Script</a>
                             </li>
                             <li class="nav-item">
-                              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+                              <a class="nav-link" id="csharp-tab" data-toggle="tab" href="#csharp" role="tab" aria-controls="csharp"
                                 aria-selected="false">C#</a>
                             </li>
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                               <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
                                 aria-selected="false">Contact</a>
-                            </li>
+                            </li> -->
                           </ul>
                           <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div class="tab-pane fade show active" id="typescript" role="tabpanel" aria-labelledby="typescript-tab">
                                     <div id="schemaPreview" class="codePreview"></div></div>
-                            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+
+                            <div class="tab-pane fade" id="csharp" role="tabpanel" aria-labelledby="csharp-tab">
                                     <div id="schemaPreviewCSharp" class="codePreview"></div>
                             </div>
-                            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab"></div>
-                          </div>
+
+                            <!-- <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab"></div>
+                          </div> -->
 
                 
             </div>
@@ -71,14 +106,22 @@
 </style>
 
 <script>
-    
-document.addEventListener("DOMContentLoaded",(e) =>{
 
-    var codeGenerator = new CodeGenerator();
-    
-  
-   //document.getElementById("response").innerText = codeGenerator.GetCode("the code 5464565","TypeScript");
-    
+  document.addEventListener("DOMContentLoaded",(e) =>{
+    GenerateCode();
+  });
+
+
+  function GenerateCode(){
+
+    var url = document.getElementById("graphQLEndpointUrl").value;
+    if(url == ""){
+      var url = document.getElementById("graphQLEndpointUrl").placeholder;
+    }
+    var headersText = document.getElementById("httpHeaders").value;
+    var headers = headersText == ""?"":JSON.parse(headersText);
+    var codeGenerator = new CodeGenerator(url,headers);
+   
     codeGenerator.GetSchema(function(result){
         var para = document.createElement("pre");
         var t = document.createTextNode(result);
@@ -95,5 +138,6 @@ document.addEventListener("DOMContentLoaded",(e) =>{
       
     },"C#");
 
-});
+  }
+
 </script>
