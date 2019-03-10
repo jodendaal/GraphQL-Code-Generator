@@ -1,4 +1,4 @@
-class TypeScriptTypeCodeGeneratorInstance implements ICodeGeneratorInstance{
+class TypeScriptTypeCodeGeneratorInstance implements ITypeCodeGeneratorInstance{
     code : string = "TypeScript";
     GetQueryCode(query : GraphQLQuery) : string {
 

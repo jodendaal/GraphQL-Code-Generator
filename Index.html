@@ -14,34 +14,51 @@
   <body>
     <h3>Welcome to GraphQL Code Generator. We hope you enjoy your stay.</h3>
 
-    <div>
+    <textarea id="queryCode"></textarea>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Url</span>
+                </div>
       
+                <input id="graphQLEndpointUrl" type="text" class="form-control" placeholder="https://graphql.communitygraph.org/graphql/" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                <div class="input-group-append">
+                    <button id="btnGenerate" onclick="GenerateCode()" class="btn btn-outline-secondary" type="button">Generate</button>
+                  </div>
+              </div>
+      
+            <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Headers</span>
+                </div>
+      
+      
+                <textarea class="form-control" aria-label="With textarea" id="httpHeaders" type="text" rows="4" cols="50" class="form-control" placeholder="{
+                  'apiKey':'KK888==',
+                   'userId':'1'
+      }" ></textarea>
+              </div>
+        </div>
+    </div>
+
+    <div>
+        <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Url</span>
+            </div>
+  
+            <input id="graphQLEndpointUrl" type="text" class="form-control" placeholder="https://graphql.communitygraph.org/graphql/" aria-label="Recipient's username" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button id="btnGetQuery" onclick="GenerateCode()" class="btn btn-outline-secondary" type="button">Generate</button>
+              </div>
+          </div>
     </div>
 
 
 
-      <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Url</span>
-          </div>
-
-          <input id="graphQLEndpointUrl" type="text" class="form-control" placeholder="https://graphql.communitygraph.org/graphql/" aria-label="Recipient's username" aria-describedby="basic-addon2">
-          <div class="input-group-append">
-              <button id="btnGenerate" onclick="GenerateCode()" class="btn btn-outline-secondary" type="button">Generate</button>
-            </div>
-        </div>
-
-      <div class="input-group">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Headers</span>
-          </div>
-
-
-          <textarea class="form-control" aria-label="With textarea" id="httpHeaders" type="text" rows="4" cols="50" class="form-control" placeholder="{
-            apiKey:'KK888==',
-             userId:1
-}" ></textarea>
-        </div>
+     
     
    
     
@@ -121,6 +138,9 @@
     var headersText = document.getElementById("httpHeaders").value;
     var headers = headersText == ""?"":JSON.parse(headersText);
     var codeGenerator = new CodeGenerator(url,headers);
+
+    document.getElementById("queryCode").value =   codeGenerator.GetQueryCode("","JQuery");
+     
    
     codeGenerator.GetSchema(function(result){
         var para = document.createElement("pre");

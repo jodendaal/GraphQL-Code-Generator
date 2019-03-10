@@ -1,4 +1,4 @@
-class CSharpTypeCodeGeneratorInstance implements ICodeGeneratorInstance{
+class CSharpTypeCodeGeneratorInstance implements ITypeCodeGeneratorInstance{
     code : string = "C#";
     GetQueryCode(query : GraphQLQuery) : string {
 

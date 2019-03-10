@@ -2,19 +2,27 @@
 
 class CodeGenerator
 {
-    codeGenerators : ICodeGeneratorInstance [];
+    typeCodeGenerators : ITypeCodeGeneratorInstance [];
+    queryCodeGenerators : IQueryCodeGeneratorInstance [];
 
     constructor(private url : string,private headers : any){
-        this.codeGenerators = [new CSharpTypeCodeGeneratorInstance(),new TypeScriptTypeCodeGeneratorInstance()]
+        this.typeCodeGenerators = [new CSharpTypeCodeGeneratorInstance(),new TypeScriptTypeCodeGeneratorInstance()]
+        this.queryCodeGenerators = [new JqueryQueryCodeGenerator()];
     }
 
     public GetQueryCode(query : GraphQLQuery,code  : string) : string {
-        var generator = this.codeGenerators.filter(i=> i.code == code)[0];
-        return generator.GetQueryCode(query);
+
+        var query = new GraphQLQuery();
+        query.operationName = "IntrospectionQuery";
+        query.query = "query IntrospectionQuery { __schema { queryType { name } mutationType { name } subscriptionType { name } types { ...FullType } directives { name description locations args { ...InputValue } } } }        fragment FullType on __Type { kind name description fields(includeDeprecated: true) { name description args { ...InputValue } type { ...TypeRef } isDeprecated deprecationReason } inputFields { ...InputValue } interfaces { ...TypeRef } enumValues(includeDeprecated: true) { name description isDeprecated deprecationReason } possibleTypes { ...TypeRef } }                fragment InputValue on __InputValue { name description type { ...TypeRef } defaultValue }                fragment TypeRef on __Type { kind name ofType { kind name ofType { kind name ofType { kind name ofType { kind name ofType { kind name ofType { kind name ofType { kind name } } } } } } } } ";
+        query.variables = {};
+
+        var generator = this.queryCodeGenerators.filter(i=> i.code == code)[0];
+        return generator.GetQueryCode(query,this.url,this.headers);
     }
 
     public GetSchema(callback : (content : string) => void,code : string) {
-        var generator = this.codeGenerators.filter(i=> i.code == code)[0];
+        var generator = this.typeCodeGenerators.filter(i=> i.code == code)[0];
         var schema = new Schema();
         schema.getSchema(this.url,this.headers, (result=>{
 
@@ -78,10 +86,14 @@ class Schema {
 }
 
 
-interface ICodeGeneratorInstance{
+interface ITypeCodeGeneratorInstance{
     code : string ;
-    GetQueryCode(query : GraphQLQuery) : string;
     GetTypeCode(type : any) : string;
+}
+
+interface IQueryCodeGeneratorInstance{
+    code : string ;
+    GetQueryCode(type : GraphQLQuery,url : string,headers : any) : string;
 }
 
 
